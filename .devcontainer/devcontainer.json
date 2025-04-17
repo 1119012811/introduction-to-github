@@ -1,0 +1,228 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {}
+}import 'package:flutter/material.dart';
+
+void main() {
+  runApp(ThaqafatAlQahwaApp());
+}
+
+class ThaqafatAlQahwaApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ثقافات القهوة',
+      theme: ThemeData(
+        primarySwatch: Colors.brown,
+        fontFamily: 'Cairo',
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final List<Map<String, dynamic>> drinks = [
+    {
+      'name': 'اسبريسو',
+      'price': 10,
+      'image': 'https://i.imgur.com/0VbWlGy.png',
+      'description': 'اسبريسو طازج قوي الطعم.'
+    },
+    {
+      'name': 'لاتيه',
+      'price': 14,
+      'image': 'https://i.imgur.com/H1d0qeY.png',
+      'description': 'حليب على قهوة، ناعم ولذيذ.'
+    },
+    {
+      'name': 'كابتشينو',
+      'price': 12,
+      'image': 'https://i.imgur.com/cfMdI7j.png',
+      'description': 'رغوة وحليب وقهوة متوازنة.'
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ثقافات القهوة'),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => RecipesPage()),
+            ),
+            child: Text('وصفات القهوة'),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => CulturePage()),
+            ),
+            child: Text('ثقافات القهوة'),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+          ),
+          SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              itemCount: drinks.length,
+              itemBuilder: (context, index) {
+                final drink = drinks[index];
+                return ListTile(
+                  leading: Image.network(drink['image'], width: 50),
+                  title: Text(drink['name']),
+                  subtitle: Text('${drink['price']} ريال'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DrinkDetailPage(drink: drink),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DrinkDetailPage extends StatelessWidget {
+  final Map<String, dynamic> drink;
+
+  DrinkDetailPage({required this.drink});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(drink['name'])),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Image.network(drink['image'], height: 200),
+            SizedBox(height: 20),
+            Text(drink['description'], style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            Text('السعر: ${drink['price']} ريال', style: TextStyle(fontSize: 16)),
+            Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('تم طلب ${drink['name']}')),
+                );
+              },
+              child: Text('طلب الآن'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.brown,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RecipesPage extends StatelessWidget {
+  final List<Map<String, String>> recipes = [
+    {
+      'title': 'قهوة تركية',
+      'image': 'https://i.imgur.com/vwLBEpK.jpg',
+      'description': 'ضع ملعقة بن ناعم مع سكر حسب الرغبة في ركوة، أضف الماء، واغلها ببطء.'
+    },
+    {
+      'title': 'قهوة عربية',
+      'image': 'https://i.imgur.com/obBV9DP.jpg',
+      'description': 'حمّص البن، أطحنه، اغليه مع هيل وماء، ثم قدمه بدلة وفنجان.'
+    },
+    {
+      'title': 'V60',
+      'image': 'https://i.imgur.com/Qv2V5uM.jpg',
+      'description': 'ضع الفلتر واغسله، ثم ضع البن واسكب الماء بحركات دائرية.'
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('وصفات القهوة')),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(10),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: recipes.length,
+        itemBuilder: (context, index) {
+          final recipe = recipes[index];
+          return Card(
+            child: Column(
+              children: [
+                Image.network(recipe['image']!, height: 100, fit: BoxFit.cover),
+                SizedBox(height: 10),
+                Text(recipe['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(recipe['description']!, style: TextStyle(fontSize: 12)),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CulturePage extends StatelessWidget {
+  final List<Map<String, String>> cultures = [
+    {
+      'country': 'إيطاليا',
+      'info': 'يشربون الاسبريسو واقف في المقاهي، ويعد جزء من روتينهم اليومي.'
+    },
+    {
+      'country': 'اليابان',
+      'info': 'يهتمون بالقهوة المختصة وطريقة التحضير بالتنقيط (pour over).'
+    },
+    {
+      'country': 'إثيوبيا',
+      'info': 'موطن القهوة الأصلية، وتحضّر القهوة في جلسات تقليدية طويلة.'
+    },
+    {
+      'country': 'السعودية',
+      'info': 'قهوة عربية مع الهيل والزعفران، وتقدم مع التمر في المجالس.'
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('ثقافات القهوة')),
+      body: ListView.builder(
+        itemCount: cultures.length,
+        itemBuilder: (context, index) {
+          final culture = cultures[index];
+          return ListTile(
+            leading: Icon(Icons.public),
+            title: Text(culture['country']!),
+            subtitle: Text(culture['info']!),
+          );
+        },
+      ),
+    );
+  }
+}
